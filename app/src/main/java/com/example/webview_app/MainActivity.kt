@@ -1,10 +1,14 @@
 package com.example.webview_app
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -20,6 +24,23 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val webView = findViewById<WebView>(R.id.webview)
+        webView.setWebViewClient(object :WebViewClient(){
+            override fun shouldOverrideUrlLoading(
+                view: WebView?,
+                request: WebResourceRequest?
+            ): Boolean {
+                // true -> 주도권을 가져오지 않는다
+                // false -> 주도권을 가져오겠다.(우리앱)
+                return false
+            }
+        })
+
+        try {
+            webView.loadUrl(intent.data!!.toString())
+        }catch (exception : Exception){
+
+        }
+
         val urlPrefix = "http://"
         var finalUrl = ""
 
@@ -49,8 +70,8 @@ class MainActivity : AppCompatActivity() {
         val open = findViewById<TextView>(R.id.open)
         open.setOnClickListener {
             val url = address.text.toString()
-            Log.d("testt", url)
-            webView.loadUrl(finalUrl)
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(intent)
         }
     }
 }
